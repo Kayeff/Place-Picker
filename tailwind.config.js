@@ -12,6 +12,7 @@ export default {
         "verdigris": "#7EBDC2",
         "vanilla": "#F3DFA2",
         "linen": "#EFE6DD",
+        "dark-slate-gray": "#305252",
       },
       fontFamily: {
         "Switzer": ["Switzer", "sans-serif"],

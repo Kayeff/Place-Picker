@@ -7,10 +7,10 @@ import { RiAddLine, RiSubtractLine } from "@remixicon/react";
 import Modal from "./components/Modal";
 
 export default function App() {
+  const modal = useRef();
   const [addedPlace, setAddedPlace] = useState({
     places: []
   });
-  const modal = useRef();
 
   function addPlace(placeID) {
     setAddedPlace(prevPlace => {
