@@ -1,4 +1,4 @@
-import logo from "../assets/logo.svg";
+import logo from "../assets/logo.png";
 
 export default function Header() {
   return (
@@ -8,7 +8,7 @@ export default function Header() {
         </div>
         <div className="flex items-center justify-center flex-col">
             <h1 className="font-semibold text-5xl uppercase tracking-tight text-raisin-black">placepicker</h1>
-            <p className="text-sm text-slate-600 font-medium">Create a personal collection of places you would like to visit or you have visited</p>
+            <p className="text-sm font-medium">Create a personal collection of places you would like to visit or you have visited</p>
         </div>
     </div>
   )
