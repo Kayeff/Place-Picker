@@ -5,9 +5,6 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    fontFamily: {
-      "Switzer": ["Switzer", "sans-serif"],
-    },
     extend: {
       colors: {
         "raisin-black": "#231F20",
@@ -16,6 +13,12 @@ export default {
         "vanilla": "#F3DFA2",
         "linen": "#EFE6DD",
       },
+      fontFamily: {
+        "Switzer": ["Switzer", "sans-serif"],
+      },
+      boxShadow: {
+        "place": "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;"
+      }
     },
   },
   plugins: [],
