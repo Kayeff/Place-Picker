@@ -1,5 +1,7 @@
 import Header from "./components/Header";
+import Place from "./components/Place";
 import PlaceSection from "./components/PlaceSection";
+import {AVAILABLE_PLACES} from "./data";
 
 export default function App() {
   return (
@@ -9,7 +11,9 @@ export default function App() {
         Places....
       </PlaceSection>
       <PlaceSection title="Available Places">
-        Places....
+        {AVAILABLE_PLACES.map(place => {
+          return <Place key={place.id} place={place} />
+        })}
       </PlaceSection>
     </main>
   )
