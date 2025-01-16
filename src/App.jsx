@@ -9,13 +9,14 @@ import Modal from "./components/Modal";
 export default function App() {
   const modal = useRef();
   const [addedPlace, setAddedPlace] = useState({
-    places: []
+    places: [],
+    selectedPlaceID: undefined,
   });
 
   function addPlace(placeID) {
     setAddedPlace(prevPlace => {
       const place = AVAILABLE_PLACES.find(place => place.id === placeID);
-      const existingPlace = addedPlace.places.find(place => place.id === placeID);
+      const existingPlace = prevPlace.places.some(place => place.id === placeID);
 
       if (existingPlace) {
         return {
@@ -32,17 +33,35 @@ export default function App() {
 
   function removePlace(placeID) {
     modal.current.open();
+    addedPlace.selectedPlaceID = placeID;
+  }
+
+  function handleRemove(){
     setAddedPlace(prevPlace => {
       return {
         ...prevPlace,
-        places: prevPlace.places.filter(place => place.id !== placeID),
+        places: prevPlace.places.filter(place => place.id !== addedPlace.selectedPlaceID),
       }
     });
+    modal.current.close();
+  }
+
+  function handleCancel(){
+    modal.current.close();
+    addedPlace.selectedPlaceID = undefined;
+  }
+
+  let selectedPlace;
+  if(!selectedPlace){
+    selectedPlace = addedPlace.places.find(place => place.id === addedPlace.selectedPlaceID);
+  }
+  else{
+    selectedPlace = undefined;
   }
 
   return (
       <main className="w-full min-h-screen overflow-x-hidden bg-linen font-Switzer space-y-8 relative">
-        <Modal ref={modal} />
+        <Modal handleRemove={handleRemove} handleCancel={handleCancel} ref={modal} />
         <Header />
         <PlaceSection title="Places I would like to visit">
           {addedPlace.places.map(place => {
