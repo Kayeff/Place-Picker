@@ -5,11 +5,9 @@ import PlaceSection from "./components/PlaceSection";
 import { AVAILABLE_PLACES } from "./data";
 import { RiAddLine, RiSubtractLine } from "@remixicon/react";
 import Modal from "./components/Modal";
-import { sortPlacesByDistance } from "./loc";
 
 export default function App() {
   const modal = useRef();
-  const [availablePlace, setAvailablePlace] = useState([]);
   const [addedPlace, setAddedPlace] = useState({
     places: [],
     selectedPlaceID: undefined,
@@ -60,19 +58,13 @@ export default function App() {
     addedPlace.selectedPlaceID = undefined;
   }
 
-  let selectedPlace;
-  if(!selectedPlace){
-    selectedPlace = addedPlace.places.find(place => place.id === addedPlace.selectedPlaceID);
-  }
-  else{
-    selectedPlace = undefined;
-  }
-
   return (
       <main className="w-full min-h-screen overflow-x-hidden bg-linen font-Switzer space-y-8 relative">
         <Modal handleRemove={handleRemove} handleCancel={handleCancel} ref={modal} />
         <Header />
-        <PlaceSection title="Places I would like to visit">
+        <PlaceSection
+          fallbackText={addedPlace.places.length === 0 ? "Add places here" : ""} 
+          title="Places I would like to visit">
           {addedPlace.places.map(place => {
             return <Place
               key={place.id}
