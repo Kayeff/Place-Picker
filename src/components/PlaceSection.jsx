@@ -5,7 +5,7 @@ export default function PlaceSection({title, children}) {
             {title}
         </h1>
         <div className="w-full grid grid-cols-4 gap-4">
-            {children}
+          {children}
         </div>
     </section>
   )

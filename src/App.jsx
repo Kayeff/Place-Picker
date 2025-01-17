@@ -1,17 +1,26 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Header from "./components/Header";
 import Place from "./components/Place";
 import PlaceSection from "./components/PlaceSection";
 import { AVAILABLE_PLACES } from "./data";
 import { RiAddLine, RiSubtractLine } from "@remixicon/react";
 import Modal from "./components/Modal";
+import { sortPlacesByDistance } from "./loc";
 
 export default function App() {
   const modal = useRef();
+  const [availablePlace, setAvailablePlace] = useState([]);
   const [addedPlace, setAddedPlace] = useState({
     places: [],
     selectedPlaceID: undefined,
   });
+
+  useEffect(()=>{
+    navigator.geolocation.getCurrentPosition((position) => {
+      console.log(position.coords.latitude, position.coords.longitude);
+    });
+  }, []);
+
 
   function addPlace(placeID) {
     setAddedPlace(prevPlace => {
