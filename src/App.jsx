@@ -5,9 +5,11 @@ import PlaceSection from "./components/PlaceSection";
 import { AVAILABLE_PLACES } from "./data";
 import { RiAddLine, RiSubtractLine } from "@remixicon/react";
 import Modal from "./components/Modal";
+import { sortPlacesByDistance } from "./loc";
 
 export default function App() {
   const modal = useRef();
+  const [availablePlaces, setAvailablePlaces] = useState([]);
   const [addedPlace, setAddedPlace] = useState({
     places: [],
     selectedPlaceID: undefined,
@@ -15,7 +17,13 @@ export default function App() {
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
-      console.log(position.coords.latitude, position.coords.longitude);
+      const sortedPlaces = sortPlacesByDistance(
+        AVAILABLE_PLACES,
+        position.coords.latitude,
+        position.coords.longitude
+      );
+
+      setAvailablePlaces(sortedPlaces);
     });
   }, []);
 
@@ -85,7 +93,7 @@ export default function App() {
         })}
       </PlaceSection>
       <PlaceSection title="Available Places">
-        {AVAILABLE_PLACES.map((place) => {
+        {availablePlaces.map((place) => {
           return (
             <Place
               key={place.id}

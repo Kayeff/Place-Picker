@@ -6,3 +6,8 @@
   font-family: "Switzer";
   src: url("./fonts/Switzer.woff2");
 }
+
+@font-face {
+  font-family: "Manrope";
+  src: url("./fonts/Manrope.woff2");
+}
