@@ -10,7 +10,7 @@ export default function Header() {
         <h1 className="font-semibold text-5xl uppercase tracking-tight text-raisin-black">
           placepicker
         </h1>
-        <p className="text-sm font-medium">
+        <p className="text-sm font-medium text-slate-700/70">
           Create a personal collection of places you would like to visit or you
           have visited
         </p>

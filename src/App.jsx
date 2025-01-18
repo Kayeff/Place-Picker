@@ -113,7 +113,11 @@ export default function App() {
       />
       <Header />
       <PlaceSection
-        fallbackText={pickedPlaces.places.length === 0 ? "Add places here" : ""}
+        fallbackText={
+          pickedPlaces.places.length === 0
+            ? "Once added your places would appear here"
+            : ""
+        }
         title="Places I would like to visit"
       >
         {pickedPlaces.places.map((place) => {
