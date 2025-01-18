@@ -27,7 +27,7 @@ export default function Place({ place, onClick, Icon }) {
       </p>
       {visible && (
         <button
-          className="h-20 w-20 rounded-full bg-[rgba(0,0,0,0.5)] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-linen flex items-center justify-center"
+          className="h-20 w-20 rounded-full bg-[rgba(0,0,0,0.5)] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-linen flex items-center justify-center hover:bg-[rgba(0,0,0,0.7)] transition-colors"
           onClick={() => onClick(place.id)}
         >
           <Icon size={40} />

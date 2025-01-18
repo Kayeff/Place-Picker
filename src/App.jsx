@@ -7,11 +7,16 @@ import { RiAddLine, RiSubtractLine } from "@remixicon/react";
 import Modal from "./components/Modal";
 import { sortPlacesByDistance } from "./loc";
 
+const storedID = JSON.parse(localStorage.getItem("selectedPlaces")) || [];
+const storedPlaces = storedID.map((id) =>
+  AVAILABLE_PLACES.find((places) => places.id === id)
+);
+
 export default function App() {
   const modal = useRef();
   const [availablePlaces, setAvailablePlaces] = useState([]);
-  const [addedPlace, setAddedPlace] = useState({
-    places: [],
+  const [pickedPlaces, setPickedPlaces] = useState({
+    places: storedPlaces,
     selectedPlaceID: undefined,
   });
 
@@ -24,11 +29,15 @@ export default function App() {
       );
 
       setAvailablePlaces(sortedPlaces);
-    });
+    }),
+      (error) => {
+        console.error("Error fetching location:", error.message);
+        setAvailablePlaces(AVAILABLE_PLACES);
+      };
   }, []);
 
   function addPlace(placeID) {
-    setAddedPlace((prevPlace) => {
+    setPickedPlaces((prevPlace) => {
       const place = AVAILABLE_PLACES.find((place) => place.id === placeID);
       const existingPlace = prevPlace.places.some(
         (place) => place.id === placeID
@@ -45,43 +54,69 @@ export default function App() {
         places: [...prevPlace.places, place],
       };
     });
+
+    const storedID = JSON.parse(localStorage.getItem("selectedPlaces")) || [];
+    if (storedID.indexOf(placeID) === -1) {
+      localStorage.setItem(
+        "selectedPlaces",
+        JSON.stringify([placeID, ...storedID])
+      );
+    }
   }
 
   function removePlace(placeID) {
     modal.current.open();
-    addedPlace.selectedPlaceID = placeID;
+    setPickedPlaces((prevPlace) => {
+      return {
+        ...prevPlace,
+        selectedPlaceID: placeID,
+      };
+    });
   }
 
   function handleRemove() {
-    setAddedPlace((prevPlace) => {
+    setPickedPlaces((prevPlace) => {
       return {
         ...prevPlace,
         places: prevPlace.places.filter(
-          (place) => place.id !== addedPlace.selectedPlaceID
+          (place) => place.id !== pickedPlaces.selectedPlaceID
         ),
       };
     });
+
+    const storedID = JSON.parse(localStorage.getItem("selectedPlaces")) || [];
+    const updatedStoredID = storedID.filter(
+      (id) => id !== pickedPlaces.selectedPlaceID
+    );
+
+    localStorage.setItem("selectedPlaces", JSON.stringify(updatedStoredID));
     modal.current.close();
   }
 
   function handleCancel() {
     modal.current.close();
-    addedPlace.selectedPlaceID = undefined;
+    setPickedPlaces((prevPlace) => {
+      return {
+        ...prevPlace,
+        selectedPlaceID: undefined,
+      };
+    });
   }
 
   return (
     <main className="w-full min-h-screen overflow-x-hidden bg-linen font-Switzer space-y-8 relative">
       <Modal
+        placeID={pickedPlaces.selectedPlaceID}
         handleRemove={handleRemove}
         handleCancel={handleCancel}
         ref={modal}
       />
       <Header />
       <PlaceSection
-        fallbackText={addedPlace.places.length === 0 ? "Add places here" : ""}
+        fallbackText={pickedPlaces.places.length === 0 ? "Add places here" : ""}
         title="Places I would like to visit"
       >
-        {addedPlace.places.map((place) => {
+        {pickedPlaces.places.map((place) => {
           return (
             <Place
               key={place.id}

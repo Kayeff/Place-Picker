@@ -4,7 +4,11 @@ export default function PlaceSection({ fallbackText, title, children }) {
       <h1 className="font-semibold text-2xl tracking-tight text-raisin-black">
         {title}
       </h1>
-      <h1 className="font-medium text-sm text-slate-500/60">{fallbackText}</h1>
+      {fallbackText && (
+        <h1 className="font-medium text-sm text-slate-500/60">
+          {fallbackText}
+        </h1>
+      )}
       <div className="w-full grid grid-cols-4 gap-4">{children}</div>
     </section>
   );

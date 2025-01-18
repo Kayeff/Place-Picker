@@ -1,7 +1,11 @@
 import { useImperativeHandle, forwardRef, useRef } from "react";
 import { createPortal } from "react-dom";
+import { AVAILABLE_PLACES } from "../data";
 
-const Modal = forwardRef(function Modal({ handleCancel, handleRemove }, ref) {
+const Modal = forwardRef(function Modal(
+  { placeID, handleCancel, handleRemove },
+  ref
+) {
   const dialog = useRef();
   useImperativeHandle(ref, () => {
     return {
@@ -14,6 +18,13 @@ const Modal = forwardRef(function Modal({ handleCancel, handleRemove }, ref) {
     };
   });
 
+  let title;
+  if (placeID !== undefined) {
+    title = AVAILABLE_PLACES.find((place) => place.id === placeID).title;
+  } else {
+    title = "";
+  }
+
   return createPortal(
     <dialog
       ref={dialog}
@@ -21,7 +32,10 @@ const Modal = forwardRef(function Modal({ handleCancel, handleRemove }, ref) {
     >
       <div className="w-full">
         <h1 className="font-semibold text-2xl tracking-tight">
-          You really want to remove the place ?
+          You really want to remove the place?
+        </h1>
+        <h1 className="font-semibold text-2xl tracking-tight text-davys-gray">
+          {title}
         </h1>
       </div>
       <form
@@ -30,15 +44,15 @@ const Modal = forwardRef(function Modal({ handleCancel, handleRemove }, ref) {
       >
         <button
           onClick={handleCancel}
-          className="text-sm px-3 py-2 bg-raisin-black text-linen hover:bg-persian-red font-medium rounded-md transition-colors"
+          className="text-sm px-4 py-2 bg-raisin-black text-linen hover:bg-persian-red font-medium rounded-md transition-colors"
         >
           Cancel
         </button>
         <button
           onClick={handleRemove}
-          className="text-sm px-3 py-2 bg-raisin-black text-linen rounded-md font-medium hover:bg-dark-slate-gray transition-colors"
+          className="text-sm px-4 py-2 bg-raisin-black text-linen rounded-md font-medium hover:bg-dark-slate-gray transition-colors"
         >
-          Remove
+          Yes
         </button>
       </form>
     </dialog>,

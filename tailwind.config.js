@@ -13,6 +13,7 @@ export default {
         "vanilla": "#F3DFA2",
         "linen": "#EFE6DD",
         "dark-slate-gray": "#305252",
+        "davys-gray": "#575A5E",
       },
       fontFamily: {
         "Switzer": ["Switzer", "sans-serif"],
