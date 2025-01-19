@@ -13,7 +13,7 @@ const storedPlaces = storedID.map((id) =>
 );
 
 export default function App() {
-  const modal = useRef();
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [availablePlaces, setAvailablePlaces] = useState([]);
   const [pickedPlaces, setPickedPlaces] = useState({
     places: storedPlaces,
@@ -65,13 +65,14 @@ export default function App() {
   }
 
   function removePlace(placeID) {
-    modal.current.open();
     setPickedPlaces((prevPlace) => {
       return {
         ...prevPlace,
         selectedPlaceID: placeID,
       };
     });
+
+    setModalIsOpen(true);
   }
 
   function handleRemove() {
@@ -90,11 +91,11 @@ export default function App() {
     );
 
     localStorage.setItem("selectedPlaces", JSON.stringify(updatedStoredID));
-    modal.current.close();
+    setModalIsOpen(false);
   }
 
   function handleCancel() {
-    modal.current.close();
+    setModalIsOpen(false);
     setPickedPlaces((prevPlace) => {
       return {
         ...prevPlace,
@@ -103,13 +104,23 @@ export default function App() {
     });
   }
 
+  let title;
+  if (pickedPlaces.selectedPlaceID !== undefined) {
+    const selectedPlace = availablePlaces.find(
+      (place) => place.id === pickedPlaces.selectedPlaceID
+    );
+    title = selectedPlace.title;
+  } else {
+    title = "";
+  }
+
   return (
     <main className="w-full min-h-screen overflow-x-hidden bg-linen font-Switzer space-y-8 relative">
       <Modal
-        placeID={pickedPlaces.selectedPlaceID}
+        title={title}
         handleRemove={handleRemove}
         handleCancel={handleCancel}
-        ref={modal}
+        open={modalIsOpen}
       />
       <Header />
       <PlaceSection
