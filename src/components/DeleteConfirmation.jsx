@@ -1,12 +1,24 @@
-import React from "react";
+import { useEffect } from "react";
+import ProgressBar from "./ProgressBar";
 
+const timer = 10000;
 export default function DeleteConfirmation({
   title,
   handleCancel,
   handleRemove,
 }) {
+  useEffect(() => {
+    const timerID = setTimeout(() => {
+      handleRemove();
+    }, timer);
+
+    return () => {
+      clearTimeout(timerID);
+    };
+  }, [handleRemove]);
+
   return (
-    <>
+    <div className="w-full space-y-8">
       <div className="w-full">
         <h1 className="font-semibold text-2xl tracking-tight">
           You really want to remove the place?
@@ -32,6 +44,7 @@ export default function DeleteConfirmation({
           Yes
         </button>
       </form>
-    </>
+      <ProgressBar timer={timer} />
+    </div>
   );
 }

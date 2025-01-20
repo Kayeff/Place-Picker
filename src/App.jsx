@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useCallback, useState } from "react";
 import Header from "./components/Header";
 import Place from "./components/Place";
 import PlaceSection from "./components/PlaceSection";
@@ -6,11 +6,12 @@ import { AVAILABLE_PLACES } from "./data";
 import { RiAddLine, RiSubtractLine } from "@remixicon/react";
 import Modal from "./components/Modal";
 import { sortPlacesByDistance } from "./loc";
+import DeleteConfirmation from "./components/DeleteConfirmation";
 
 const storedID = JSON.parse(localStorage.getItem("selectedPlaces")) || [];
-const storedPlaces = storedID.map((id) =>
-  AVAILABLE_PLACES.find((places) => places.id === id)
-);
+const storedPlaces = storedID
+  .map((id) => AVAILABLE_PLACES.find((places) => places.id === id))
+  .filter(Boolean);
 
 export default function App() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -21,19 +22,20 @@ export default function App() {
   });
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      const sortedPlaces = sortPlacesByDistance(
-        AVAILABLE_PLACES,
-        position.coords.latitude,
-        position.coords.longitude
-      );
-
-      setAvailablePlaces(sortedPlaces);
-    }),
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const sortedPlaces = sortPlacesByDistance(
+          AVAILABLE_PLACES,
+          position.coords.latitude,
+          position.coords.longitude
+        );
+        setAvailablePlaces(sortedPlaces);
+      },
       (error) => {
         console.error("Error fetching location:", error.message);
         setAvailablePlaces(AVAILABLE_PLACES);
-      };
+      }
+    );
   }, []);
 
   function addPlace(placeID) {
@@ -75,24 +77,27 @@ export default function App() {
     setModalIsOpen(true);
   }
 
-  function handleRemove() {
-    setPickedPlaces((prevPlace) => {
-      return {
-        ...prevPlace,
-        places: prevPlace.places.filter(
-          (place) => place.id !== pickedPlaces.selectedPlaceID
-        ),
-      };
-    });
+  const handleRemove = useCallback(
+    function handleRemove() {
+      setPickedPlaces((prevPlace) => {
+        return {
+          ...prevPlace,
+          places: prevPlace.places.filter(
+            (place) => place.id !== pickedPlaces.selectedPlaceID
+          ),
+        };
+      });
 
-    const storedID = JSON.parse(localStorage.getItem("selectedPlaces")) || [];
-    const updatedStoredID = storedID.filter(
-      (id) => id !== pickedPlaces.selectedPlaceID
-    );
+      setModalIsOpen(false);
 
-    localStorage.setItem("selectedPlaces", JSON.stringify(updatedStoredID));
-    setModalIsOpen(false);
-  }
+      const storedID = JSON.parse(localStorage.getItem("selectedPlaces")) || [];
+      const updatedStoredID = storedID.filter(
+        (id) => id !== pickedPlaces.selectedPlaceID
+      );
+      localStorage.setItem("selectedPlaces", JSON.stringify(updatedStoredID));
+    },
+    [pickedPlaces.selectedPlaceID]
+  );
 
   function handleCancel() {
     setModalIsOpen(false);
@@ -117,11 +122,16 @@ export default function App() {
   return (
     <main className="w-full min-h-screen overflow-x-hidden bg-linen font-Switzer space-y-8 relative">
       <Modal
-        title={title}
-        handleRemove={handleRemove}
-        handleCancel={handleCancel}
         open={modalIsOpen}
-      />
+        handleCancel={handleCancel}
+        handleRemove={handleRemove}
+      >
+        <DeleteConfirmation
+          title={title}
+          handleCancel={handleCancel}
+          handleRemove={handleRemove}
+        />
+      </Modal>
       <Header />
       <PlaceSection
         fallbackText={
